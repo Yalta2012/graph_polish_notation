@@ -5,11 +5,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "stack_math.h"
 #include "stack.h"
+#include "stack_math.h"
 
 int main() {
     struct node *nodes = init();
+    char **graph = create_matrix(Y_SIZE, X_SIZE);
     // nodes = push_symbol(nodes, 's');
     // nodes = push_number(nodes, PI/2);
     // nodes = push_number(nodes, 5);
@@ -22,16 +23,37 @@ int main() {
     // nodes = push_number(nodes, 5);
     // nodes = push_number(nodes, 7);
 
-    nodes = push_symbol(nodes, 't');
-    nodes = push_symbol(nodes, '-');
-    nodes = push_symbol(nodes, 'L');
-    nodes = push_symbol(nodes, 'x');
-    nodes = push_symbol(nodes, 'L');
-    nodes = push_number(nodes, 2);
+    // nodes = push_symbol(nodes, 't');
+    // nodes = push_symbol(nodes, '-');
+    // nodes = push_symbol(nodes, 'L');
+    // nodes = push_symbol(nodes, 'x');
+    // nodes = push_symbol(nodes, 'L');
+    // nodes = push_number(nodes, 2);
 
-    output_function(nodes);
-    printf("%Lf", polish_calculation(nodes, 1));
+    //  nodes = push_symbol(nodes, 's');
+    //  nodes = push_symbol(nodes, 'c');
+    //  nodes = push_symbol(nodes, '*');
+    //  nodes = push_symbol(nodes, 'x');
+    //  nodes = push_number(nodes, 2);
 
+    // nodes = push_symbol(nodes,'t');
+    // nodes = push_number(nodes,PI*4);
+    // nodes = push_symbol(nodes,'x');
+
+    // nodes = push_symbol(nodes,'q');
+    // nodes = push_symbol(nodes,'-');
+    // nodes = push_symbol(nodes,'s');
+    // nodes = push_symbol(nodes,'x');
+    // nodes = push_number(nodes,1);
+
+    // nodes = push_symbol(nodes,'t');
+    // nodes = push_symbol(nodes,'x');
+
+    write_grapth(graph, nodes);
+    print_graph(graph, Y_SIZE, X_SIZE);
+    // output_function(nodes);
+    // printf("%Lf", polish_calculation(nodes, 1));
+    free_matrix(graph, Y_SIZE);
     destroy(nodes);
     return 0;
 }
@@ -107,8 +129,24 @@ void free_matrix(char **matrix, int h) {
     }
 }
 
-void write_grapth(int ** matrix, struct node * line){
-    for (int i = 0; i<X_SIZE; i++){
-        
+void write_grapth(char **matrix, struct node *line) {
+    if (!matrix || !line) return;
+    long double ys[X_SIZE];
+    long double x_step = ((long double)RIGHT_BORDER - LEFT_BORDER) / (X_SIZE - 1);
+    long double y_step = ((long double)UPPER_BORDER - LOWER_BORDER) / (Y_SIZE - 1);
+
+    for (int i = 0; i < Y_SIZE; i++) {
+        for (int j = 0; j < X_SIZE; j++) {
+            matrix[i][j] = '.';
+        }
+    }
+    for (int i = 0; i < X_SIZE; i++) {
+        ys[i] = polish_calculation(line, i * x_step);
+        if (!isnan(ys[i]) && ys[i] < UPPER_BORDER && ys[i] > LOWER_BORDER) {
+            int y_coord = round((ys[i] - LOWER_BORDER - y_step) * (Y_SIZE / 2 + 1));
+            if (y_coord >= 0 && y_coord < Y_SIZE) {
+                matrix[y_coord][i] = '*';
+            }
+        }
     }
 }
