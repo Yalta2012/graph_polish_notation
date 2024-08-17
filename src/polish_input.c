@@ -39,7 +39,7 @@ struct node *translateToPolishAnn(struct node *queue, char *inputStr) {
                 stack = pop(stack);
             }
             stack = pop(stack);
-            if (strchr("sctTqL", stack->value.symbol)) {
+            if (stack->type != -1 && strchr("sctTqL", stack->value.symbol)) {
                 queue = push_symbol_in_queue(queue, stack->value.symbol);
                 stack = pop(stack);
             }

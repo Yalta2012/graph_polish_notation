@@ -41,7 +41,7 @@ long double polish_calculation(struct node* line, long double x) {
             }
             line = line->next;
         } while (line->type >= 0 && flag);
-        if (flag && stack->next->type != -1) {
+        if (flag && (stack->type == -1 || stack->next->type != -1)) {
             flag = 0;
         }
     }
